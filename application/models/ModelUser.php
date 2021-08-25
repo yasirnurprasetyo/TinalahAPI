@@ -33,4 +33,12 @@ class ModelUser extends CI_Model {
         $this->db->where("role_user", "admin");
 		return $this->db->get($this->table)->result();
     }
+
+    public function getAllJoinGambar()
+	{
+		$this->db->select("s.*,g.*")
+			->from("scan as s")
+			->join("gambar as g", "s.objek_id = g.id_gambar");
+		return $this->db->get()->result();
+	}
 }

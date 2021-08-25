@@ -35,3 +35,19 @@ CREATE TABLE tokengame(
 	created_at_tokengame timestamp not null default now(),
     updated_at_tokengame timestamp not null default now() on update now()
 );
+
+CREATE TABLE scan(
+	id_scan int not null primary key auto_increment,
+	gambar_id int not null,
+	tokengame_id int not null,
+	user_id int not null,
+	gambar_id int not null,
+	gambar_scan varchar(200),
+	gambar_scan_url varchar(150),
+	total_skor int,
+	created_at timestamp not null default now(),
+    updated_at timestamp not null default now() on update now(),
+	foreign key(gambar_id) references gambar(id_gambar),
+	foreign key(tokengame_id) references tokengame(id_tokengame),
+	foreign key(user_id) references user(id_user)
+);

@@ -34,9 +34,9 @@ class ModelTokenGame extends CI_Model{
 
 	function checkTokenGame($token)
 	{
-		$syarat = array("token_game" => $token, "is_active" => "1");
+		$syarat = array("token_game" => $token, "is_active_tokengame" => "1");
 		$this->db->where($syarat);
-		$verifiyToken = $this->db->get("game")->row();
+		$verifiyToken = $this->db->get("tokengame")->row();
 		if (!$verifiyToken) {
 			return false;
 		}

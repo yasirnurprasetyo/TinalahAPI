@@ -17,6 +17,10 @@ class Login extends REST_Controller
         $email = $this->input->server("PHP_AUTH_USER");
         $password = $this->input->server("PHP_AUTH_PW");
         $user = $this->ModelLogin->checkUser($email, $password);
+        $dataSession = array(
+			"id_user_app" => $user->id_user
+		);
+		$this->session->set_userdata($dataSession);
 
         if ($user != null) {
             //Update Token dan Tanggal Expired dari Token
@@ -30,6 +34,7 @@ class Login extends REST_Controller
             $this->ModelLogin->updateExpiredAndTokenUser($user->id_user, $dataToken);
             $data = array(
                 "name_user" => $user->name_user,
+                "id_user" => $user->id_user,
                 "email_user" => $user->email_user,
                 "phone_user" => $user->phone_user,
                 "image_user" => $user->image_user,
