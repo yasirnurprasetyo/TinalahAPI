@@ -51,3 +51,6 @@ CREATE TABLE scan(
 	foreign key(tokengame_id) references tokengame(id_tokengame),
 	foreign key(user_id) references user(id_user)
 );
+
+-- menampilkan data high score
+select sum(total_skor) from scan where game_id = 1 and user_id =  

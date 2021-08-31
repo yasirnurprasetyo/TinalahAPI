@@ -33,17 +33,43 @@ class ModelScan extends CI_Model
 		return $this->db->delete($this->table);
 	}
 
-	public function getScanUser()
+	//menampilkan highscore
+	public function getHighScoreGame(){
+		// "select user_id, sum(total_skor) as total_skor from scan group by user_id, tokengame_id order by total_skor desc";
+		$this->db->select('sum(total_skor) as total_skor, user_id, u.name_user, t.nama_tokengame');
+		$this->db->from('scan');
+		$this->db->join('user as u', 'user_id = u.id_user');
+		$this->db->join('tokengame as t', 'tokengame_id = t.id_tokengame');
+		$this->db->group_by('user_id');
+		$this->db->order_by('total_skor');
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	
+
+	//menampilkan history scan berdasarkan id
+	public function getScanUser($id)
 	{
-		// $id = $this->session->userdata['id_user_app']['id_user']; // dapatkan id user yg login
-		// $this->db->select('s.*,u.*','g.*');
-		// $id = $this->session->userdata('id_user_app');
-		$id = "1";
 		$this->db->select('*');
 		$this->db->from('scan as s');
 		$this->db->join('user as u', 's.user_id = u.id_user');
 		$this->db->join('gambar as g', 's.gambar_id = g.id_gambar');
+		$this->db->join('tokengame as tg', 's.tokengame_id = tg.id_tokengame');
 		$this->db->where('user_id', $id);
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	//menampilkan history scan all
+	public function getScanAll()
+	{
+		$this->db->select('*');
+		$this->db->from('scan as s');
+		$this->db->join('user as u', 's.user_id = u.id_user');
+		$this->db->join('gambar as g', 's.gambar_id = g.id_gambar');
+		$this->db->join('tokengame as tg', 's.tokengame_id = tg.id_tokengame');
+		// $this->db->where('user_id', $id);
 		$query = $this->db->get();
 		return $query->result();
 	}

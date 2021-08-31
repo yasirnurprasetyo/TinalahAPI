@@ -26,10 +26,10 @@ class ModelTokenGame extends CI_Model{
         return $this->db->update($this->table, $data);
 	}
 
-	public function delete($primaryKey)
+	public function delete($id)
 	{
-		$this->db->where($this->primaryKey, $primaryKey);
-        return $this->db->delete($this->table);
+		$this->db->where($this->primaryKey, $id);
+		return $this->db->update($this->table, array("is_active_tokengame" => 0));
 	}
 
 	function checkTokenGame($token)
