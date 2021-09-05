@@ -41,12 +41,10 @@ class ModelScan extends CI_Model
 		$this->db->join('user as u', 'user_id = u.id_user');
 		$this->db->join('tokengame as t', 'tokengame_id = t.id_tokengame');
 		$this->db->group_by('user_id');
-		$this->db->order_by('total_skor');
+		$this->db->order_by('total_skor', 'desc');
 		$query = $this->db->get();
 		return $query->result();
 	}
-
-	
 
 	//menampilkan history scan berdasarkan id
 	public function getScanUser($id)
@@ -80,5 +78,19 @@ class ModelScan extends CI_Model
 			->from("scan as s")
 			->join("gambar as g", "s.gambar_id = g.id_gambar");
 		return $this->db->get()->result();
+	}
+
+	//menampilkan detail scan terakhir
+	public function getDetailScanLast()
+	{
+		$this->db->select('*');
+		$this->db->from('scan as s');
+		$this->db->join('user as u', 's.user_id = u.id_user');
+		$this->db->join('gambar as g', 's.gambar_id = g.id_gambar');
+		$this->db->join('tokengame as tg', 's.tokengame_id = tg.id_tokengame');
+		$this->db->order_by('id_scan', 'desc');
+		$this->db->limit(1);
+		$query = $this->db->get();
+		return $query->result();
 	}
 }

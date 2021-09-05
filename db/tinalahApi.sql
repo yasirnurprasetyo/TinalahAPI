@@ -52,5 +52,17 @@ CREATE TABLE scan(
 	foreign key(user_id) references user(id_user)
 );
 
+CREATE TABLE identify(
+	id_identify int not null primary key auto_increment,
+	gambar_id_identify int not null,
+	user_id_identify int not null,
+	gambar_identify varchar(200),
+	gambar_indetify varchar(200),
+	created_at_identify timestamp not null default now(),
+    updated_at_identify timestamp not null default now() on update now(),
+	foreign key(gambar_id_identify) references gambar(id_gambar)
+	foreign key(user_id_identify) references user(id_user)
+);
+
 -- menampilkan data high score
-select sum(total_skor) from scan where game_id = 1 and user_id =  
+select * from identify order by id_identify desc limit 1;

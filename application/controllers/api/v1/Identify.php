@@ -3,12 +3,14 @@ require(APPPATH . '/libraries/REST_Controller.php');
 
 use Restserver\Libraries\REST_Controller;
 
-class Scan extends Restserver\Libraries\REST_Controller
+class Identify extends Restserver\Libraries\REST_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model("ModelScan");
+        $this->load->model("ModelIdentify");
+        $this->load->library('upload');
+        
         //cek Token
         header('Content-Type: application/json');
         if (checkToken() == FALSE) {
@@ -17,14 +19,13 @@ class Scan extends Restserver\Libraries\REST_Controller
         }
     }
 
-    //menampilkan data detail scan gambar game
     public function index_get()
     {
-        $dataDetail = $this->ModelScan->getDetailScanLast();
+        $dataIdentify = $this->ModelIdentify->getDetailIdentify();
         $result = array(
             "status" => true,
             "message" => "Get All Identify Success",
-            "result" => $dataDetail
+            "result" => $dataIdentify
         );
         // echo var_dump($dataIdentify);
         if ($result) {
@@ -45,42 +46,39 @@ class Scan extends Restserver\Libraries\REST_Controller
         $body = $resultObjek["body"];
         $dataHasil = $body;
 
-        $poin = 10;
-        $userId = $this->input->post('user_id', true);
-        $tokenId = $this->input->post('tokengame_id', true);
-        
+        $userId = $this->input->post('user_id_identify', true); //user id
+
         //proses tambah image
-        $stringBase64 = $this->input->post("gambar_scan", true);
+        $stringBase64 = $this->input->post("gambar_identify", true);
         $fileName = md5(date("d-m-Y H:i:s") . rand(1, 100000));
         $fileName .= ".jpg";
         $decode = base64_decode($stringBase64);
-        file_put_contents("image/scan/$fileName", $decode);
+        file_put_contents("image/identify/$fileName", $decode);
 
         $imageUrl = base_url() . "image/scan/" . $fileName;
 
-        //tambah data scan
+        $config['encrypt_name'] = TRUE;
+
         $data = array(
-            "gambar_scan" => $fileName,
-            "total_skor" => $poin,
-            "gambar_scan_url" => $imageUrl,
-            "gambar_id" => $dataHasil,
-            "user_id" => $userId,
-            "tokengame_id" => $tokenId
+            "gambar_identify" => $fileName,
+            "gambar_identify_url" => $imageUrl,
+            "gambar_id_identify" => $dataHasil,
+            "user_id_identify" => $userId
         );
-        // echo var_dump($fileName);
+        // echo var_dump($image);
         json_encode($data, 200);
-        $result = $this->ModelScan->insert($data);
+        $result = $this->ModelIdentify->insert($data);
         if ($result) {
             $pesan = array(
                 "status" => true,
-                "message" => "Create Data Scan Berhasil",
+                "message" => "Create Data Identify Berhasil",
                 "result" => $data
             );
             $this->response($pesan, 201);
         } else {
             $pesan = array(
                 "status" => false,
-                "message" => "Create Data Scan Gagal",
+                "message" => "Create Data Identify Gagal",
             );
             $this->response($pesan, 404);
         }
