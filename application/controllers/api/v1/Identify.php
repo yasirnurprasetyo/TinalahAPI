@@ -10,7 +10,7 @@ class Identify extends Restserver\Libraries\REST_Controller
         parent::__construct();
         $this->load->model("ModelIdentify");
         $this->load->library('upload');
-        
+
         //cek Token
         header('Content-Type: application/json');
         if (checkToken() == FALSE) {
@@ -53,19 +53,32 @@ class Identify extends Restserver\Libraries\REST_Controller
         $fileName = md5(date("d-m-Y H:i:s") . rand(1, 100000));
         $fileName .= ".jpg";
         $decode = base64_decode($stringBase64);
-        file_put_contents("image/identify/$fileName", $decode);
+        file_put_contents("image/identify/$fileName", $decode); // ("nama_file yg akan ditulis", "isi data yg ada dalam file")
 
         $imageUrl = base_url() . "image/scan/" . $fileName;
 
-        $config['encrypt_name'] = TRUE;
+        if($fileName != null){
+            $config['image_library']='gd2';
+            $config['source_image'] = './image/identify/'.$fileName;
+            $config['create_thumb']= FALSE;
+            $config['maintain_ratio']= TRUE;
+            $config['width']= 200;
+            $config['height']= 200;
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+        }else{
+            echo "error";
+        }
+
+        $gambarId = "1";
 
         $data = array(
             "gambar_identify" => $fileName,
             "gambar_identify_url" => $imageUrl,
-            "gambar_id_identify" => $dataHasil,
+            "gambar_id_identify" => $gambarId,
             "user_id_identify" => $userId
         );
-        // echo var_dump($image);
+        echo var_dump($fileName);
         json_encode($data, 200);
         $result = $this->ModelIdentify->insert($data);
         if ($result) {
